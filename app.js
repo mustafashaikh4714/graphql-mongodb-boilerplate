@@ -1,6 +1,8 @@
 // import express from 'express'
 import bodyParser from 'body-parser'
+import DataLoader from 'dataloader'
 import { GraphQLServer, PubSub } from 'graphql-yoga'
+import User from './models/User'
 import Mutation from './src/resolvers/Mutation'
 import Query from './src/resolvers/Query'
 import Todo from './src/resolvers/Todo'
@@ -16,7 +18,20 @@ const server = new GraphQLServer({
     Todo
   },
   context({ request }) {
-    return { pubsub, request }
+    return {
+      pubsub,
+      request,
+      creatorLoader: new DataLoader(async (keys) => {
+        const creators = await User.find({ _id: { $in: keys } })
+        const creatorMap = {}
+
+        creators.forEach((creator) => {
+          creatorMap[creator._id] = creator
+        })
+
+        return keys.map((key) => creatorMap[key])
+      })
+    }
   }
 })
 

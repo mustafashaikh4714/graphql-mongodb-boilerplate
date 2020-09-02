@@ -1,8 +1,7 @@
-import User from '../../../models/User'
-
 const Todo = {
-  async creator(parent, args, { db }, info) {
-    return User.findOne({ _id: parent.creator })
+  async creator(parent, args, { creatorLoader }, info) {
+    return creatorLoader.load(parent.creator)
+    // return User.findOne({ _id: parent.creator })
   }
 }
 

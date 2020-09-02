@@ -11,11 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "dataloader": "^2.0.0",
     "env-cmd": "^10.1.0",
     "esm": "^3.2.25",
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.10.1",
+    "mongoose": "^5.10.2",
     "passport": "^0.4.1",
     "validator": "^13.1.1"
   },

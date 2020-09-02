@@ -2,12 +2,19 @@ scalar Date
 
 type Query {
   users(query: String): [User!]!
+  todos: [Todo!]!
+  todo(id: ID!): Todo!
   me: User!
 }
 
 type Mutation {
   createUser(data: CreateUserInput): User!
   updateUser(data: UpdateUserInput): User!
+  deleteUser: String!
+  createTodo(data: CreateTodoInput): Todo!
+  updateTodo(data: UpdateTodoInput): Todo!
+  deleteTodo(id: ID!): String!
+  markTodoAsComplete(id: ID!): Todo!
   login(data: LoginInput): String!
 }
 
@@ -33,4 +40,27 @@ type User {
   password: String!
   createdAt: Date!
   updatedAt: Date!
+}
+
+type Todo {
+  _id: ID!
+  title: String!
+  body: String!
+  isCompleted: Boolean!
+  creator: User!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+input CreateTodoInput {
+  title: String!
+  body: String!
+  isCompleted: Boolean!
+}
+
+input UpdateTodoInput {
+  id: ID!
+  title: String
+  body: String
+  isCompleted: Boolean
 }

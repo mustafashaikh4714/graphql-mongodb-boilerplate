@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs'
 import validator from 'validator'
+import Todo from '../../../models/Todo'
 import User from '../../../models/User'
 import authenticate from '../../../utils/authenticate'
 import getHash from '../../../utils/getHash'
@@ -19,8 +20,7 @@ const createUser = async (parent, args, {}, info) => {
   const hashPassword = await getHash(args.data.password)
   const newUser = await new User({
     ...args.data,
-    password: hashPassword,
-    createdAt: new Date()
+    password: hashPassword
   }).save()
 
   return newUser
@@ -30,6 +30,24 @@ const updateUser = async (parent, args, { request }, info) => {
   const id = authenticate(request)
   return User.findByIdAndUpdate(id, { $set: { ...args.data } }, { new: true })
 }
+
+const deleteUser = async (parent, args, { request }, info) => {
+  const id = authenticate(request)
+
+  const user = await User.findById(id)
+  if (!user) {
+    throw new Error('Invalid user!')
+  }
+  const deleteUser = await User.deleteOne({ _id: id })
+  await Todo.deleteMany({ creator: id })
+
+  if (deleteUser.deletedCount === 1) {
+    return `User ${user.username} deleted successfully.`
+  } else {
+    return `Unable to delete user ${user.username}.`
+  }
+}
+
 const login = async (parent, args, {}, info) => {
   if (!validator.isEmail(args.data.email)) {
     throw new Error('Invalid Email!')
@@ -49,4 +67,4 @@ const login = async (parent, args, {}, info) => {
   return token
 }
 
-export default { login, createUser, updateUser }
+export default { login, createUser, updateUser, deleteUser }

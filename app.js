@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 import { GraphQLServer, PubSub } from 'graphql-yoga'
 import Mutation from './src/resolvers/Mutation'
 import Query from './src/resolvers/Query'
+import Todo from './src/resolvers/Todo'
 
 const pubsub = new PubSub()
 const port = process.env.PORT || 4001
@@ -11,7 +12,8 @@ const server = new GraphQLServer({
   typeDefs: './schema.graphql',
   resolvers: {
     Mutation,
-    Query
+    Query,
+    Todo
   },
   context({ request }) {
     return { pubsub, request }
